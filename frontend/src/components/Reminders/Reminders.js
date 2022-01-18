@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Card, Row, Button, Modal, FormControl, Form } from 'react-bootstrap'
+import { Container, Card, Row, Col, Button, Modal, FormControl, Form } from 'react-bootstrap'
 import NavigationBar from '../Navbar/Navbar';
 import { useState } from 'react'
 import axios from 'axios'
@@ -99,7 +99,13 @@ const Reminders = () => {
       <NavigationBar />
       <Container>
         <Row className="justify-content-center" style={{ textAlign: 'center', margin: '10px' }} >
-          <h3>Reminders</h3>
+          <Col xs={12} md={6}>
+            <h3>Reminders</h3>
+          </Col>
+          <Col xs={12} md={6}>
+            <Button onClick={() => setShowModal(true)} style={{ width: '30%' }}> Add Reminder</Button>
+          </Col>
+          
         </Row>
         {
           reminders.map((reminder) => (
@@ -121,10 +127,11 @@ const Reminders = () => {
             </Row>
           ))
         }
-        <Row className="justify-content-center">
-          <Button onClick={() => setShowModal(true)} style={{ width: '30%' }}> Add Reminder</Button>
-        </Row>
+        <br />
+        
+      
       </Container>
+      <br />
     </div >
   )
 }

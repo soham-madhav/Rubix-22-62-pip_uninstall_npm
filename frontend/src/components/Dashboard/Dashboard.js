@@ -67,7 +67,7 @@ const Dashboard = () => {
                             </Tab>
                             <Tab eventKey="quarterly" title="Quarterly" >
                                 <Row>
-                                    <Col md={12} lg={10} >
+                                    <Col md={12} lg={12} >
                                     <Card className="justify-content-center" style={{width:'100%', backgroundColor:'transparent'}}> 
                                         <QuaterlyChart />
                                     </Card>

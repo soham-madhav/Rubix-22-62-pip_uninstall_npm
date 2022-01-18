@@ -1,22 +1,22 @@
 import React from 'react'
 import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link } from 'react-router-dom'
+import './Navbar.css'
 
 function NavigationBar() {
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-            <Container>
-                <Navbar.Brand href="#home">EZBill</Navbar.Brand>
+            <Container >
+                <Navbar.Brand href="#home" style={{fontFamily:'Times New Roman', fontSize:'30px'}}>EZBill</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="/home">Home</Nav.Link>
-                        <Nav.Link href="/dashboard">Analysis</Nav.Link>
-                        <Nav.Link href="/wallet">Wallet</Nav.Link>
-                        <Nav.Link href="/recommendations">Recommendations</Nav.Link>
-                        <Nav.Link href="/reminders">Reminders</Nav.Link>
-                        <Nav.Link href="/ico">ICO</Nav.Link>
+                        <Nav.Link className="navv" href="/home" style={{fontFamily:'Times New Roman'}}>Home</Nav.Link>
+                        <Nav.Link href="/dashboard" style={{fontFamily:'Times New Roman'}}>Analysis</Nav.Link>
+                        <Nav.Link href="/wallet" style={{fontFamily:'Times New Roman'}}>Wallet</Nav.Link>
+                        <Nav.Link href="/recommendations" style={{fontFamily:'Times New Roman'}}>Recommendations</Nav.Link>
+                        <Nav.Link href="/reminders" style={{fontFamily:'Times New Roman'}}>Reminders</Nav.Link>
+                        <Nav.Link href="/ico" style={{fontFamily:'Times New Roman'}}>ICO</Nav.Link>
                         {/* <Nav.Link href="/recommendations">Recommendations</Nav.Link>
                         <NavDropdown title="Reminders" id="collasible-nav-dropdown">
                             <NavDropdown.Item href="#">Action</NavDropdown.Item>

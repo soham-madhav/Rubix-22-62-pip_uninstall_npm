@@ -2,8 +2,7 @@ import React from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { useState } from 'react';
-import {    CategoryScale, LinearScale,
-    BarElement, Title, PointElement, LineElement } from 'chart.js';
+import { CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import {Row, Col} from 'react-bootstrap'
 

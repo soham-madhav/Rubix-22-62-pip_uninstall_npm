@@ -16,3 +16,7 @@ nav{
 .right{
   background-color: green;
 }
+
+.navv:hover{
+  color: aqua;
+}
