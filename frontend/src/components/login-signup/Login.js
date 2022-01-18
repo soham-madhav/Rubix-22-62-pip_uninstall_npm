@@ -35,7 +35,7 @@ function Login() {
                         <div className="card o-hidden border-0 shadow-lg my-5">
                             <div className="card-body p-0">
                                 <div className="row justify-content-center">
-                                    
+
                                     <div className="col-lg-6">
                                         <div className="p-5">
                                             <div className="text-center">

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 function NavigationBar() {
     return (
@@ -15,13 +15,16 @@ function NavigationBar() {
                         <Nav.Link href="/dashboard">Analysis</Nav.Link>
                         <Nav.Link href="/wallet">Wallet</Nav.Link>
                         <Nav.Link href="/recommendations">Recommendations</Nav.Link>
+                        <Nav.Link href="/reminders">Reminders</Nav.Link>
+                        <Nav.Link href="/ico">ICO</Nav.Link>
+                        {/* <Nav.Link href="/recommendations">Recommendations</Nav.Link>
                         <NavDropdown title="Reminders" id="collasible-nav-dropdown">
                             <NavDropdown.Item href="#">Action</NavDropdown.Item>
                             <NavDropdown.Item href="#">Another action</NavDropdown.Item>
                             <NavDropdown.Item href="#">Something</NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="/reminders">-Add Reminder</NavDropdown.Item>
-                        </NavDropdown>
+                        </NavDropdown> */}
                     </Nav>
                     <Nav>
                         <Nav.Link href="#deets">More deets</Nav.Link>
