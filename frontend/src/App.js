@@ -3,6 +3,7 @@ import Login from "./components/login-signup/Login";
 import Landing from "./components/landing/Landing";
 import Wallet from "./components/wallet/Wallet";
 import Dashboard from "./components/Dashboard/Dashboard";
+import Reminders from "./components/Reminders/Reminders";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/wallet" element={<Wallet />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/reminders" element={<Reminders />} />
         </Routes>
       </Router>
     </div>
