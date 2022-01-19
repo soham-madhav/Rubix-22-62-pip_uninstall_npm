@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from cashapp.models import  User, Transaction, Wallet
+from cashapp.models import  User, Transaction, Wallet, Reminder
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,5 +18,11 @@ class WalletSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
+        fields = '__all__'
+
+
+class ReminderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reminder
         fields = '__all__'
 

@@ -1,4 +1,5 @@
-from .models import UserFraudAdvisor
+from datetime import datetime
+from .models import UserFraudAdvisor, Reminder
 # from curses.ascii import HT
 from pyqrcode import QRCode
 import png
@@ -17,7 +18,7 @@ from rest_framework.response import Response
 
 from .models import User, Wallet, Transaction
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import UserSerializer, WalletSerializer, TransactionSerializer
+from .serializers import UserSerializer, WalletSerializer, TransactionSerializer, ReminderSerializer
 
 # Create your views here.
 
@@ -115,13 +116,25 @@ def userRegistration(request):
 
 
 @ api_view(['GET'])
-def getTransactions(request, phoneNo):
-    transactions = Transaction.objects.filter(
-        user=User.objects.get(phoneNumber=phoneNo))
+def getTransactions(request, phoneNo, timeDuration):
+    import datetime
+    print(datetime.timedelta(days=int(timeDuration)))
+    transactions = Transaction.objects.filter(user=User.objects.get(phoneNumber=phoneNo) )
+
+    transactions.filter( transactionTimeStamp__gte= datetime.datetime.now()-datetime.timedelta(days=int(timeDuration))) 
+    transactions = [x for x in transactions if x.transactionTimeStamp >= datetime.datetime.now()-datetime.timedelta(days=int(timeDuration))]
     serializer = TransactionSerializer(transactions, many=True)
     return Response(serializer.data)
 
-
+@ api_view(['GET'])
+def getWalletBalance(request, phoneNo):
+    try:
+        wallet = Wallet.objects.get(
+            user=User.objects.get(phoneNumber=phoneNo))
+        serializer = WalletSerializer(wallet)
+    except ObjectDoesNotExist:
+        return Response(False)
+    return Response(serializer.data)
 # {
 #     "userId": 1,
 #    "phoneNo": 8888888881,
@@ -228,7 +241,7 @@ def addTransaction(request):
 # TODO intergeate frontend
 # @ api_view(['GET'])
 
-
+@ api_view(['GET'])
 def getQRCode(request, phoneNo, amount):
 
     reacturl = "http://127.0.0.1:8000"
@@ -240,17 +253,30 @@ def getQRCode(request, phoneNo, amount):
     url = pyqrcode.create(finalUrl)
 
     # Create and save the svg file naming "myqr.svg"
-    url.svg("myqr.svg", scale=8)
-
+    url.svg(r"C:\Users\JaiParmani\OneDrive\Desktop\rubix\frontend\src\assets\QR\myqr.svg", scale=8)
+    
     # Create and save the png file naming "myqr.png"
-    url.png('myqr.png', scale=6)
+    url.png(r'C:\Users\JaiParmani\OneDrive\Desktop\rubix\frontend\src\assets\QR\myqr.png', scale=6)
     # html = r"<img src='C:\Users\JaiParmani\OneDrive\Desktop\rubix\cashflow\myqr.png'>"
-    return HttpResponse("HELLo")
+    return HttpResponse(r"C:\Users\JaiParmani\OneDrive\Desktop\rubix\frontend\src\assets\QR\myqr.png")
 
 
-@ api_view(['GET'])
-def transferMoney(request, amount, phoneNo, receiverPhoneNo):
-    if(not User.objects.filter(phoneNumber=receiverPhoneNo).exists()):
+@ api_view(['POST'])
+def transferMoney(request):
+        # {"phoneNo":"1", "receiverPhoneNo":2, "walletTransaction": "true", "transactionAmount": "100", "transactionTimeStamp":"2019-11-11T11:11:11", "transactionDescription": "test", "transactionType": "CR", "transactionCategory": "FOOD"}
+    print("MAKE TRANSFER HAS BEEN CALLED")
+    import json
+    data = request.data
+    data = list(data.keys())[0]
+    print(data)
+    data = json.loads(data)
+    print(data)
+    data["user"] = User.objects.get(phoneNumber=data["phoneNo"]).id
+    phoneNo = data["phoneNo"]
+    del data["phoneNo"]
+    amount = data["transactionAmount"]
+    receiverPhoneNo = data["receiverPhoneNo"]
+    if(not User.objects.filter(phoneNumber=data["receiverPhoneNo"]).exists()):
         return Response(False)
     sender = User.objects.get(phoneNumber=phoneNo)
     walBal = Wallet.objects.get(user=sender).walletBal
@@ -263,6 +289,36 @@ def transferMoney(request, amount, phoneNo, receiverPhoneNo):
     walBal = Wallet.objects.get(user=receiver).walletBal
     walBal = walBal + float(amount)
     Wallet.objects.filter(user=receiver).update(walletBal=walBal)
+
+    
+
+    
+    serializer = TransactionSerializer(data=data)
+    # return Response(request.data)
+    if serializer.is_valid():
+        serializer.save()
+        walBal = Wallet.objects.get(user=data["user"]).walletBal
+        if(serializer.data['walletTransaction']):
+            if(serializer.data['transactionType'] == 'CR'):
+                walBal = walBal + float(serializer.data['transactionAmount'])
+            else:
+                walBal = walBal - float(serializer.data['transactionAmount'])
+            Wallet.objects.filter(user=data["user"]).update(walletBal=walBal)
+            transactionVal = data["transactionAmount"]
+            import datetime
+            transactionTimeStamp = datetime.datetime.now()
+            # data["transactionTimeStamp"]
+
+            isFraudDetector = UserFraudAdvisor.objects.get(user=data["user"])
+            UserFraudAdvisor.objects.filter(user=data["user"]).update(lastTransactionAmount=transactionVal, lastTransactionTS=transactionTimeStamp, maxAmount=max(isFraudDetector.maxAmount, (isFraudDetector.maxAmount+int(transactionVal))/2))
+        return Response(serializer.data)
+    else:
+        print("SERIALIZER VALID:", serializer.is_valid())
+        print("SERIA", serializer.errors)
+    print("MAKE TRANSFER HAS BEEN CALLED")
+    return Response(serializer.data)
+
+
     return Response(True)
 
 
@@ -360,15 +416,69 @@ def addMoneyToWallet(request, phoneNo, amount):
     Wallet.objects.filter(user=user).update(walletBal=walBal)
     return Response(True)
 
+from .categories import entertainment, home_utility, food, investment, transport, shopping
+import nltk
+import nltk
 
-def extratData(request):
+def categorize(text):
+    text = text.lower()
+    nltk.download('wordnet')    
+    words = nltk.tokenize.word_tokenize(text)
+    stop_words = set(nltk.corpus.stopwords.words('english'))
+    print(text)
+    filtered_list = [w for w in words if w not in stop_words]
+    e = f = inv = t =s = h =False
+    for word in filtered_list:
+        if word in entertainment:
+            e = True
+            break
+        elif word in investment:
+            inv = True
+            break
+        elif word in food:
+            f = True
+            break
+        elif word in shopping:
+            s = True
+            break
+        elif word in transport:
+            t = True
+            break
+        elif word in home_utility:
+            h = True
+            break
+
+    if(e):
+        print("entertainment category")
+        return 'entertainment'
+    elif(inv):
+        print("investment category")
+        return 'investment'
+    elif(s):
+        print("shopping category")
+        return 'shopping'
+    elif(f):
+        print("food category")
+        return 'food'
+    elif(t):
+        print("transport category")
+        return 'transport'
+    elif(h):
+        print("home utility category")
+        return 'home utility'
+    else:
+        print("others")
+        return 'others'
+
+@api_view(['GET'])
+def extractData(request, path):
     import requests
     modelid = "eb0c8084-3e95-4dc9-99ec-714fb1d31bfd"
     # url = 'https://app.nanonets.com/api/v2/Inferences/Model/' + modelid #+ '/ImageLevelInferences?start_day_interval={start_day}&current_batch_day={end_day}'
 
     url = 'https://app.nanonets.com/api/v2/OCR/Model/'+modelid+'/LabelFile/'
-
-    data = {'file': open('reciept.jpg', 'rb')}
+    path = r"C:\Users\JaiParmani\OneDrive\Desktop\reciept.jpg"
+    data = {'file': open(path, 'rb')}
 
     response = requests.post(url, auth=requests.auth.HTTPBasicAuth(
         '3MjnNJP7BOApdrHAUKMbeaRIVJn43Kn2', ''), files=data)
@@ -397,10 +507,12 @@ def extratData(request):
             dict1['date'] = i['ocr_text']
         if(i['label'] == "Merchant_Address"):
             dict1['merchant_adr'] = i['ocr_text']
+            dict1['merchant_adr']    =       dict1['merchant_adr'].replace("\n", " ")
         if(i['label'] == "Merchant_Name"):
             dict1['merchant_name'] = i['ocr_text']
-
-    return response(dict1)
+    
+    dict1['category'] = categorize(dict1['merchant_name']+dict1['merchant_adr'])
+    return Response(dict1)
 
 
 from .forms import StockExchangeForm
@@ -564,6 +676,44 @@ def stockDetail(request, symbol):
 
     # https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=BSE%3APAISALO&apikey=ZT190HZDN99BS851
 
+
+
+
+@api_view(['POST'])
+def requestMoney(request):
+
+    import json
+    data = request.data
+    data = list(data.keys())[0]
+    print(data)
+    data = json.loads(data)
+    print(data)
+    data["user"] = User.objects.get(phoneNumber=data["phoneNo"]).id
+    # del data["phoneNo"]
+# {"phoneNo":"8888888881", "walletTransaction": "true", senderPhoneNo"transactionAmount": "100", "transactionTimeStamp":"2019-11-11T11:11:11", "transactionDescription": "test", "transactionType": "CR", "transactionCategory": "FOOD"}
+# {"phoneNo":"1", "walletTransaction": "true", "senderPhoneNo":"2","transactionAmount": "100",  "transactionDescription": "test", "transactionType": "CR", "transactionCategory": "FOOD"}
+# {"phoneNo":"1", "walletTransaction": "true", "senderPhoneNo":"2","transactionAmount": "100",  "transactionDescription": "test", "transactionType": "CR", "transactionCategory": "FOOD", "reminderType":"Reminder"}
+
+    import datetime
+    sender = User.objects.get(phoneNumber=data["senderPhoneNo"])
+    reciever = User.objects.get(phoneNumber =data["phoneNo"])
+    obj = Reminder(user=sender, sendToUser=reciever, reminderType = data['transactionCategory'],
+        reminderDescription=data['transactionDescription'], 
+        reminderCategory=data['transactionCategory'],  reminderTimeStamp = datetime.datetime.now(),reminderAmount=data['transactionAmount'],
+        reminderTitle = "Pay money", 
+       )
+        # data['reminderTitle'])
+    
+    obj.save()
+    return HttpResponse("True")
+
+@api_view(['GET'])
+def getReminders(request, phoneNo):
+    user = User.objects.get(phoneNumber=phoneNo)
+    reminders = Reminder.objects.filter(user=user)
+    # serialize reminders
+    serializer = ReminderSerializer(reminders, many=True)
+    return Response(serializer.data)
 
 
 

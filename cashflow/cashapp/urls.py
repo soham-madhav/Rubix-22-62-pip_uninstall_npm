@@ -16,12 +16,17 @@ urlpatterns = [
     path('addTransaction/',     views.addTransaction, name="addTransaction"),
     path('fraudCheck/',     views.fraudCheck, name="fraudCheck"),
     path('verifyUser',     views.verifyUser, name="verifyUser"),
-    path('getTransactions/phoneNo=<str:phoneNo>/',     views.getTransactions, name="getTransactions"),
+    path('getTransactions/phoneNo=<str:phoneNo>/timeDuration=<str:timeDuration>/',     views.getTransactions, name="getTransactions"),
     path('user-register/', views.userRegistration, name="user-registration"),
     # path('user-follow/', views.userFollow, name="user-follow"),
     path('getQR/phoneNo=<str:phoneNo>/amount=<str:amount>/', views.getQRCode, name="getQR"),
     path("stockDetail/<str:symbol>", views.stockDetail),
-    path("stockList", views.stockList, name="stockList")
+    path("makeTransfer/", views.transferMoney, name="makeTransfer"),    
+    path("requestMoney/", views.requestMoney, name="requestMoney"),    
+
+    path("getWalletBalance/phoneNo=<str:phoneNo>/", views.getWalletBalance, name="getWalletBalance"),
+    path("stockList", views.stockList, name="stockList"),
+    path("extractData/path=<str:path>", views.extractData, name="extractData")
     # # path('subject-update/user=<str:user>/subject_id=<int:id>',
     # #      views.subjectUpdate, name="subject-update"),
     # # path('subject-delete/subjectId=<str:subjectId>/',

@@ -27,7 +27,7 @@ class Transaction(models.Model):
     transactionCategory = models.CharField(
         # choices=[('FOOD', 'Food'), ('ENTERTAINMENT', 'Entertainment'), ('SHOPPING', 'Shopping'), ('OTHER', 'Other')], 
         max_length=100)
-
+    receiverPhoneNo = models.IntegerField(default=0)
     def __str__(self):
         return self.user.userName+" = "+self.transactionDescription
 
@@ -41,3 +41,19 @@ class UserFraudAdvisor(models.Model):
     lastTransactionAmount = models.IntegerField(default=0)
     def __str__(self):
         return self.user.userName
+
+# SEND MONEY TO FRIENDS
+class Reminder(models.Model):
+    reminderID = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reminderTitle = models.CharField(max_length=100)
+    reminderAmount = models.IntegerField(default=0)
+    sendToUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sendToUser')
+    reminderTimeStamp = models.DateTimeField(default = datetime.datetime.now())
+    reminderDescription = models.CharField(max_length=100)
+    reminderType = models.CharField(choices=[('AutoPay', 'AutoPay'), ('Reminder', 'Reminder')], max_length=10)
+    reminderCategory = models.CharField(
+        # choices=[('FOOD', 'Food'), ('ENTERTAINMENT', 'Entertainment'), ('SHOPPING', 'Shopping'), ('OTHER', 'Other')], 
+        max_length=100)
+    def __str__(self):
+        return self.user.userName+" = "+self.reminderDescription
