@@ -1,9 +1,10 @@
 import React from 'react'
-import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
+import { Navbar, Nav, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Navbar.css'
+import './Navbar.css';
 
 function NavigationBar() {
+    // const {phone} = useParams();
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container >
@@ -12,10 +13,10 @@ function NavigationBar() {
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link className="navv" href="/home" style={{fontFamily:'Times New Roman'}}>Home</Nav.Link>
-                        <Nav.Link href="/dashboard" style={{fontFamily:'Times New Roman'}}>Analysis</Nav.Link>
-                        <Nav.Link href="/wallet" style={{fontFamily:'Times New Roman'}}>Wallet</Nav.Link>
-                        <Nav.Link href="/recommendations" style={{fontFamily:'Times New Roman'}}>Recommendations</Nav.Link>
-                        <Nav.Link href="/reminders" style={{fontFamily:'Times New Roman'}}>Reminders</Nav.Link>
+                        <Nav.Link href={`/dashboard`} style={{fontFamily:'Times New Roman'}}>Analysis</Nav.Link>
+                        <Nav.Link href={`/wallet`} style={{fontFamily:'Times New Roman'}}>Wallet</Nav.Link>
+                        <Nav.Link href="http://127.0.0.1:8000/pred_app/index" style={{fontFamily:'Times New Roman'}}>Recommendations</Nav.Link>
+                        <Nav.Link href={`/reminders`} style={{fontFamily:'Times New Roman'}}>Reminders</Nav.Link>
                         <Nav.Link href="/ico" style={{fontFamily:'Times New Roman'}}>ICO</Nav.Link>
                         {/* <Nav.Link href="/recommendations">Recommendations</Nav.Link>
                         <NavDropdown title="Reminders" id="collasible-nav-dropdown">

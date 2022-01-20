@@ -1,27 +1,36 @@
 import React from 'react'
 import { useState } from 'react';
 import axios from "axios";
-import NavigationBar from '../Navbar/Navbar';
-function Login() {
+import { useNavigate} from "react-router-dom";
+// import Navigation
+
+function Login({navigation:navgiate}) {
     const [isLogin, setIsLogin] = useState(true);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
+    const navigate = useNavigate();
+
+    // console.log(props);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (isLogin) {
             axios.get(`http://127.0.0.1:8000/user-login/phoneNo=${phone}/password=${password}/`)
                 .then(result => {
-                    console.log(result);
+                    navigate('/wallet/');
                 }).catch(e => {
+                    navigate("/wallet");
                     console.log(e);
                 });
         } else {
-            axios.post(`http://127.0.0.1:8000/user-register/`, { username, email, password, phone })
+
+            var json = {"phoneNumber": phone,"userEmail": email,"userName":username,"userPassword": password}
+
+            axios.post(`http://127.0.0.1:8000/user-register/`, JSON.stringify(json))
                 .then(result => {
-                    console.log(result);
+                    navigate("/wallet");
                 }).catch(e => {
                     console.log(e);
                 });

@@ -21,7 +21,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     walletTransaction = models.BooleanField(default=False)
     transactionAmount = models.FloatField(default=0)
-    transactionTimeStamp = models.DateTimeField(default = datetime.datetime.now())
+    transactionTimeStamp = models.DateTimeField(default = datetime.datetime.now(), blank=True)
     transactionDescription = models.CharField(max_length=100)
     transactionType = models.CharField(choices=[('CR', 'Credit'), ('DR', 'Debit')], max_length=2)
     transactionCategory = models.CharField(

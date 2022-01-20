@@ -41,7 +41,7 @@ module.exports = {
       network_id:"*"
     },
     advanced: {
-      from: '0x1A122eCdfc79382cc7Fff781407Aea63CDfe1E23'
+      from: '0xe8f0A373050C080b287F478e0F609f19d3E09014'
     }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.

@@ -4,13 +4,14 @@ import Landing from "./components/landing/Landing";
 import Wallet from "./components/wallet/Wallet";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Reminders from "./components/Reminders/Reminders";
+import Navigation from "./components/Navbar/Navbar"
 import Home from "./components/Home/Home";
 import Main from "./Main";
 
 function App() {
   return (
     <div className="App">
-      <Router>
+    <Router>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/home" element={<Home />} />

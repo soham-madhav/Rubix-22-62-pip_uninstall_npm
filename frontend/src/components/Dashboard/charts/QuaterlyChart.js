@@ -1,10 +1,11 @@
 import React from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import {Row, Col} from 'react-bootstrap'
+import axios from 'axios'
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 ChartJS.register(
@@ -22,23 +23,44 @@ const options = {
       position: 'top',
     },
     title: {
-      display: true,
+      display: false,
       text: 'Chart.js Bar Chart',
     },
   },
 };
 
-const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
 
 
 
 const MonthlyChart = () => {
+ //GET QUARTERLY DATA
+
+
   const [foodCount, setfoodCount] = useState(14);
   const [entertainmentCount, setentertainmentCount] = useState(4);
   const [medicalCount, setmedicalCount] = useState(5);
   const [randomCount, setrandomCount] = useState(4);
-  const [dailyCount, setdailyCount] = useState(20);
+  const [transportCount, setTransportCount] = useState(20);
+
+  //api data
+  const [apiData, setApiData] = useState([])
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/getQuarterlyData/phoneNo%3D1/')
+    .then(result => {
+      console.log(result.data);
+      setApiData(result.data)
+    }).catch(e => {
+      console.log(e);
+    });
+  }, [])
+
+  useEffect(() => {
+    
+
+  }, [apiData]);
+
+
 
 
   const piedata = {
@@ -46,14 +68,14 @@ const MonthlyChart = () => {
     datasets: [
         {
             label: '# of Votes',
-            data: [foodCount, entertainmentCount, medicalCount, randomCount, dailyCount],
+            data: [foodCount, entertainmentCount, medicalCount, randomCount, transportCount],
             backgroundColor: [
-                'rgba(1, 83, 99,1)',
-                'rgba(3, 143, 166,1)',
-                'rgba(13, 202, 240,1)',
-                'rgba(35, 186, 217,1)',
-                'rgba(109, 203, 222,1)',
-                'rgba(181, 226, 235,0.6)',
+              '#1bafd0',
+              '#fd636b',
+              '#ffb900',
+              '#3be8b0',
+              '#6967ce',
+              '#f03c29',
             ],
             borderWidth: 0,
         },
@@ -65,25 +87,25 @@ const MonthlyChart = () => {
       {
         label: 'Food',
         data: [65, 59, 80, 81],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        backgroundColor: '#1bafd0',
       },
       {
         label: 'Entertainment',
         data: [65, 9, 90, 81],
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        backgroundColor: '#fd636b',
       },
       {
         label: 'Medical',
         data: [65, 9, 90, 81],
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        backgroundColor: '#ffb900',
       },{
         label: 'Random',
         data: [65, 9, 90, 81],
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        backgroundColor: '#3be8b0',
       },{
         label: 'Transport',
         data: [65, 9, 90, 81],
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        backgroundColor: '#6967ce',
       },
     ]
 }
@@ -95,33 +117,33 @@ const linedata = {
       label: 'Food',
       data: [65, 59, 80, 81],
       fill: false,
-      borderColor: '#ccc774',
+      borderColor: '#1bafd0',
       tension: 0.1
     }, 
     {
       label: 'Entertainment',
       data: [95, 59, 80, 81],
       fill: false,
-      borderColor: '#c48a74',
+      borderColor: '#fd636b',
       tension: 0.1
     },{
       label: 'Random',
       data: [25, 59, 80, 81],
       fill: false,
-      borderColor: '#112774',
+      borderColor: '#ffb900',
       tension: 0.1
     },{
       label: 'Medical',
       data: [55, 59, 80, 81],
       fill: false,
-      borderColor: '#74a774',
+      borderColor: '#3be8b0',
       tension: 0.1
     },
     {
       label: 'Transport',
       data: [50, 59, 80, 81],
       fill: false,
-      borderColor: '#742774',
+      borderColor: '#6967ce',
       tension: 0.1
     }
   ]

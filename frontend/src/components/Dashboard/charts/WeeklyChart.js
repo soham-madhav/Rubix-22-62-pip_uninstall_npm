@@ -1,10 +1,11 @@
 import React from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import {Row, Col} from 'react-bootstrap'
+import axios from 'axios'
 
 
 
@@ -20,25 +21,78 @@ ChartJS.register(
 
 
 const WeeklyChart = () => {
-    const [foodCount, setfoodCount] = useState(4);
-    const [entertainmentCount, setentertainmentCount] = useState(8);
-    const [medicalCount, setmedicalCount] = useState(1);
-    const [randomCount, setrandomCount] = useState(2);
-    const [dailyCount, setdailyCount] = useState(10)
+    //GET WEEKLY DATA
+    const [apiData, setApiData] = useState([])
+    const [foodCount, setfoodCount] = useState(0);
+    const [entertainmentCount, setentertainmentCount] = useState(0);
+    const [medicalCount, setmedicalCount] = useState(0);
+    const [randomCount, setrandomCount] = useState(0);
+    const [transportCount, setTransportCount] = useState(0)
 
+    useEffect(() => {
+      axios.get('http://127.0.0.1:8000/getDateWiseSpendings/phoneNo=1/duration=week/')
+      .then(result => {
+        console.log("API RETURN: ",result.data);
+        setApiData(result.data);
+        setPieData(result.data);
+
+      }).catch(e => {
+        console.log(e);
+      });
+
+      console.log("Entries : ",Object.entries(apiData))
+
+    }, []);
+    
+    const makeBarData = () => {
+      const arr = [];
+      Object.entries(apiData).forEach(function (key) {
+        arr.push(key[1].FOOD)
+      })
+      console.log(arr)
+    }
+    
+
+    const setPieData = (apiData) => {
+      Object.entries(apiData).forEach(function(key) {
+        if(key[1].FOOD){ setfoodCount((f)=> (f+(key[1].FOOD))) }
+        if(key[1].Food){ setfoodCount((f)=> (f+(key[1].Food))) }
+        
+        if(key[1].ENTERTAINMENT){ setentertainmentCount((f)=> (f+key[1].ENTERTAINMENT)) }
+        if(key[1].Entertainment){ setentertainmentCount((f)=> (f+key[1].Entertainment)) }
+  
+        if(key[1].MEDICAL){setmedicalCount((f)=> (f+(key[1].MEDICAL))) }
+        if(key[1].Medical){setmedicalCount((f)=> (f+(key[1].Medical))) }
+  
+        if(key[1].RANDOM){ setrandomCount((f)=> (f+(key[1].RANDOM))) }
+        if(key[1].Random){ setrandomCount((f)=> (f+(key[1].Random))) }
+  
+        if(key[1].TRANSPORT){ setTransportCount((f)=> (f+(key[1].TRANSPORT))) }
+        if(key[1].Transport){ setTransportCount((f)=> (f+(key[1].Transport))) }
+  
+        
+      });
+
+
+
+    }
+
+   
+
+    
     const piedata = {
         labels: ['Food', 'Entertainment', 'Medical', 'Random', 'Transport'],
         datasets: [
             {
                 label: '# of Votes',
-                data: [foodCount, entertainmentCount, medicalCount, randomCount, dailyCount],
+                data: [foodCount, entertainmentCount, medicalCount, randomCount, transportCount],
                 backgroundColor: [
-                    'rgba(1, 83, 99,1)',
-                    'rgba(3, 143, 166,1)',
-                    'rgba(13, 202, 240,1)',
-                    'rgba(35, 186, 217,1)',
-                    'rgba(109, 203, 222,1)',
-                    'rgba(181, 226, 235,0.6)',
+                    '#1bafd0',
+                    '#fd636b',
+                    '#ffb900',
+                    '#3be8b0',
+                    '#6967ce',
+                    '#f03c29',
                 ],
                 borderWidth: 0,
             },
@@ -52,38 +106,41 @@ const WeeklyChart = () => {
             position: 'top',
           },
           title: {
-            display: true,
+            display: false,
             text: 'Chart.js Bar Chart',
           },
         },
       };
+    
 
 
+
+    
     const bardata = {
-        labels: ["Sat","Sun","Mon","Tue","Wed","Thur","Fri"],
+        labels: Object.keys(apiData) ,
         datasets: [
           {
             label: 'Food',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            data: makeBarData() ,
+            backgroundColor: '#1bafd0',
           },
           {
             label: 'Entertainment',
             data: [65, 9, 90, 81, 56, 55, 40],
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            backgroundColor: '#fd636b',
           },
           {
             label: 'Medical',
             data: [65, 9, 90, 81, 56, 55, 40],
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            backgroundColor: '#ffb900',
           },{
             label: 'Random',
             data: [65, 9, 90, 81, 56, 55, 40],
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            backgroundColor: '#3be8b0',
           },{
             label: 'Transport',
             data: [65, 9, 90, 81, 56, 55, 40],
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            backgroundColor: '#6967ce',
           },
         ]
     }
@@ -95,33 +152,33 @@ const WeeklyChart = () => {
             label: 'Food',
             data: [65, 59, 80, 81, 56, 55, 40],
             fill: false,
-            borderColor: '#ccc774',
+            borderColor: '#1bafd0',
             tension: 0.1
           }, 
           {
             label: 'Entertainment',
             data: [95, 59, 80, 81, 56, 55, 40],
             fill: false,
-            borderColor: '#c48a74',
+            borderColor: '#fd636b',
             tension: 0.1
           },{
             label: 'Random',
             data: [25, 59, 80, 81, 56, 55, 40],
             fill: false,
-            borderColor: '#112774',
+            borderColor: '#ffb900',
             tension: 0.1
           },{
             label: 'Medical',
             data: [55, 59, 80, 81, 56, 55, 40],
             fill: false,
-            borderColor: '#74a774',
+            borderColor: '#3be8b0',
             tension: 0.1
           },
           {
             label: 'Transport',
             data: [50, 59, 80, 81, 56, 55, 40],
             fill: false,
-            borderColor: '#742774',
+            borderColor: '#6967ce',
             tension: 0.1
           }
         ]

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Web3 from 'web3';
 import TokenSaleContractBuild from './contracts/TokenSale.json';
 import TokenContractBuild from './contracts/Token.json';
-
+//0xe8f0A373050C080b287F478e0F609f19d3E09014
 export class Main extends Component {
     constructor(props) {
         super(props);
@@ -62,10 +62,14 @@ export class Main extends Component {
                 TokenSaleContractBuild.abi,
                 TokenSaleContractBuild.networks[networkId].address
             );
+            console.log(tokensalecontract);
             const tokencontract = await new web3.eth.Contract(
                 TokenContractBuild.abi,
                 TokenContractBuild.networks[networkId].address
             );
+            console.log('balance')
+            const balance = await tokencontract.methods.balanceOf("0xF5B7F4E7eCbF4fC98E1755c4559ae587222ce084").call();
+            console.log(balance);
             this.setState(
                 {
                     AccountDetails: {
@@ -87,6 +91,7 @@ export class Main extends Component {
     }
 
     render() {
+        console.log(this.state);
         const { name, symbol, decimals, price, sold, forSale } = this.state.TokenDetails;
         const priceInETH = 0.000000001 * price;
         const { address, balance } = this.state.AccountDetails;
@@ -99,7 +104,7 @@ export class Main extends Component {
                     <div className="container d-flex justify-content-center align-items-center flex-column">
                         <h1 className="p-2">{name} Initial Coin Offering Sale</h1>
                         <div className="container border-bottom primary mb-3"></div>
-                        <p>Introducing <b>{name}<i> ({symbol})</i></b>! Token Price is <b>{priceInETH} eth</b>. You currently have <b>{balance / (10 ** decimals)} Token(s)</b></p>
+                        <p>Introducing <b>{name}<i> ({symbol})</i></b>! Token Price is <b>{priceInETH} eth</b>. You currently have <b>{balance} Token(s)</b></p>
                     </div>
                     <div className="container">
                         <form onSubmit={this.handleSubmit}>
@@ -108,7 +113,7 @@ export class Main extends Component {
                                 <button className="btn btn-outline-primary" type="submit" id="button-addon2">Buy Tokens</button>
                             </div>
                             <div className="progress">
-                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow={`${prog}`} aria-valuemin="0" aria-valuemax="100" style={{ width: `${prog}%` }}></div>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" style={{ width: `${prog}%` }}></div>
                             </div>
                             <div className="d-flex justify-content-center align-items-center flex-column">
                                 <h5>{sold}/{parseInt(forSale) + parseInt(sold)} tokens sold</h5>

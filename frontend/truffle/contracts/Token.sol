@@ -5,7 +5,7 @@ contract Token {
     string public version = "v1.0";
     uint256 public decimals = 18; // you need to divide by 10^decimals to get the actual GLD amount.
 
-    uint256 public totalSupply = 1000 * (10**(decimals));
+    uint256 public totalSupply = 10000000;
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
 

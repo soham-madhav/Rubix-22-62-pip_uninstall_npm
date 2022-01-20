@@ -19,8 +19,15 @@ from django.urls import path
 from django.urls import include
 
 from cashapp import views
+from pred_app.views import redirect_root, search
 
 urlpatterns = [
     path('', include('cashapp.urls')),
     path('admin/', admin.site.urls),
+    #   path('', redirect_root),
+    # /pred_app/index
+    path('payments/', include('payments.urls')),
+
+	path('pred_app/', include('pred_app.urls')),
+    path('search/<str:se>/<str:stock_symbol>/', search, name='predict_stock'),
 ]

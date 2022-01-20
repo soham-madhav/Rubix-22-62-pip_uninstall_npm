@@ -7,9 +7,12 @@ import MonthlyChart from './charts/MonthlyChart';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import './dashboardStyle.css'
 
-
-
 const Dashboard = () => {
+    const budget = 10000;
+    const expenses = 7600;
+    const income = 40000;
+    
+
     return (
         <div>
             <NavigationBar />
@@ -19,26 +22,21 @@ const Dashboard = () => {
                 <Col xs={12} md={4} lg={3}>
                         <Row>
                             <Card style={{ height: 'fit-content', width: '100%', marginBottom: '30px', padding: '20px' }}>
-                                <h5>Income:</h5>
-                                <ProgressBar variant="info" now={80} />
+                                <h6>{`Income  : ₹ ${income}`}</h6>    
+                                <h6>{`Budget  : ₹ ${budget}`}</h6>
+                                <br />
+                                <h6>{`Expense  :  ₹ ${expenses}`}</h6>
+                                <h6>{`Remaining  :  ₹ ${budget-expenses}`}</h6>
+                                <br />
+                                <div style={{fontSize:'10px'}}>Status:</div>
+                                <ProgressBar variant="info"  now={76} />
                             </Card>
                         </Row>
+                        
                         <Row>
-                            <Card style={{ height: 'fit-content', width: '100%', marginBottom: '30px', padding: '20px' }}>
-                                <h5>Expense:</h5>
-                                <ProgressBar variant="info"  now={80} />
-                            </Card>
-                        </Row>
-                        <Row>
-                            <Card style={{ height: 'fit-content', width: '100%', marginBottom: '30px', padding: '20px' }}>
-                                <h5>Budget:</h5>
-                                <ProgressBar variant="info" now={80} />
-                            </Card>
-                        </Row>
-                        <Row>
-                            <Card style={{ height: 'fit-content', width: '100%', marginBottom: '30px', padding: '20px' }}>
-                                <h5>Income:</h5>
-                                <ProgressBar variant="info" now={80} />
+                            <Card style={{ height: 'fit-content', fontStyle:'italic',width: '100%', marginBottom: '30px',padding: '10px', backgroundColor:'#ffa1a5' }}>
+                                
+                                <h6>Reduce your spendings by 18% to stay under budget for this month.</h6>
                             </Card>
                         </Row>
                     </Col>
@@ -51,9 +49,7 @@ const Dashboard = () => {
                                         <WeeklyChart />
                                     </Card>
                                     </Col> 
-                                </Row>
-                                
-                              
+                                </Row>  
                               
                             </Tab>
                             <Tab eventKey="monthly" title="Monthly">
@@ -76,12 +72,8 @@ const Dashboard = () => {
                             </Tab>
                         </Tabs>
                     </Col>
-
                 </Row>
-            
             </Container>
-            
-            
         </div>
     )
 }

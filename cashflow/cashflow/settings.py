@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,8 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cashapp',
+    'pred_app',
     'rest_framework',
     'corsheaders',
+    'payments'
 ]
 
 MIDDLEWARE = [      
@@ -74,7 +77,7 @@ ROOT_URLCONF = 'cashflow.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates', "payments/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -146,3 +149,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 RAZOR_KEY_ID = "rzp_test_02gxNo2EKpFQtT"
 RAZOR_KEY_SECRET = "CfhIBD7nOpSPyIQ4auora6ZN"
+
+TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
+
+
+PAYTM_MERCHANT_ID = 'hKJlvF37591557459385'
+
+PAYTM_SECRET_KEY = 'MfK&3Dh3rLO4lNGt'
+
+PAYTM_WEBSITE = 'WEBSTAGING'
+
+PAYTM_CHANNEL_ID = 'WEB'
+
+PAYTM_INDUSTRY_TYPE_ID = 'Retail'
